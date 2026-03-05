@@ -407,6 +407,19 @@
             border-color: transparent #ffd54f transparent transparent;
         }
 
+        .course-note.on-demand {
+            background: #d7d7d7;
+            border-color: #bbb;
+        }
+
+        .course-note .course-prereqs {
+            font-size: 10px;
+            color: #777;
+            margin-top: 2px;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-style: italic;
+        }
+
         /* ===== DROP ZONE INDICATOR ===== */
         .drop-zone {
             transition: background 0.2s;
@@ -560,10 +573,10 @@
             // Core Requirements (10)
             { code: 'MATH 2315', name: 'Discrete Mathematics', allowed: null, isCore: true },
             { code: 'MATH 2413', name: 'Calculus I', allowed: null, isCore: true },
-            { code: 'MATH 2414', name: 'Calculus II', allowed: null, isCore: true },
-            { code: 'MATH 2321', name: 'Calculus III', allowed: ['fall-2027', 'summer-2027', 'summer-2028', 'summer-2029', 'summer-2030'], isCore: true },
+            { code: 'MATH 2414', name: 'Calculus II', allowed: null, isCore: true, prereqs: '2413'},
+            { code: 'MATH 2321', name: 'Calculus III', allowed: ['fall-2027', 'summer-2027', 'summer-2028', 'summer-2029', 'fall-2029', 'summer-2030'], isCore: true },
             { code: 'MATH 3305', name: 'Linear Algebra', allowed: ['spring-2027', 'spring-2028'], isCore: true },
-            { code: 'MATH 3310', name: 'Differential Equations', allowed: ['fall-2026'], isCore: true },
+            { code: 'MATH 3310', name: 'Differential Equations', allowed: ['fall-2026', 'fall-2028'], isCore: true },
             { code: 'MATH 3311', name: 'Inquiry & Proof', allowed: ['fall-2027', 'fall-2028', 'fall-2029', 'fall-2030'], isCore: true },
             { code: 'MATH 3316', name: 'Intro to Real Analysis', allowed: ['spring-2028'], isCore: true },
             { code: 'MATH 3326', name: 'Intro Math Stats', allowed: ['fall-2026', 'fall-2027', 'fall-2028', 'fall-2029'], isCore: true, isCertificate: true },
@@ -576,10 +589,13 @@
             { code: 'MATH 4332', name: 'Topics in Real Analysis', allowed: ['fall-2028'], isOneOfFour: true },
 
             // Electives (4 additional courses for variety)
+            { code: 'MATH 3338', name: 'Numerical Methods', allowed: ['fall-2026'], isElective: true},
             { code: 'MATH 3339', name: 'Introduction to Data Science', allowed: ['spring-2027', 'spring-2028', 'spring-2029', 'spring-2030'], isElective: true, isCertificate: true },
-            { code: 'MATH 3345', name: 'Special Topics', allowed: null, isElective: true },
+            { code: 'MATH 3345', name: 'Special Topics in Mathematics', allowed: null, isElective: true, onDemandOnly: true},
+            { code: 'MATH 3355', name: 'Special Topics in Statistics', allowed: null, isElective: true, onDemandOnly: true },
+            { code: 'MATH 4340', name: 'Data Science at Scale', allowed: null, isElective: true, onDemandOnly: true },
             { code: 'MATH 4343', name: 'Topology', allowed: ['fall-2029'], isElective: true },
-            { code: 'MATH 4344', name: 'Advanced Topics in Mathematics', allowed: null, isElective: true },
+            { code: 'MATH 4344', name: 'Advanced Topics in Mathematics', allowed: null, isElective: true, onDemandOnly: true },
 
             // Certificate only
             { code: 'MATH 2327', name: 'Introduction to Data Analysis', allowed: null, isCertificate: true },
@@ -671,13 +687,21 @@
 
         function createCourseNote(course) {
             const note = document.createElement('div');
-            note.className = 'course-note' + (course.isCertificate ? ' certificate' : '');
+            let classes = 'course-note';
+            if (course.isCertificate) classes += ' certificate';
+            if (course.onDemandOnly) classes += ' on-demand';
+            note.className = classes;
             note.draggable = true;
             note.dataset.code = course.code;
-            note.innerHTML = `
+            
+            let html = `
                 <span class="course-code">${course.code}</span>
                 <span class="course-name">${course.name}</span>
             `;
+            if (course.prereqs) {
+                html += `<span class="course-prereqs">(Pre: ${course.prereqs})</span>`;
+            }
+            note.innerHTML = html;
             return note;
         }
 
