@@ -574,7 +574,7 @@
             { code: 'MATH 2315', name: 'Discrete Mathematics', allowed: null, isCore: true },
             { code: 'MATH 2413', name: 'Calculus I', allowed: null, isCore: true },
             { code: 'MATH 2414', name: 'Calculus II', allowed: null, isCore: true, prereqs: '2413'},
-            { code: 'MATH 2321', name: 'Calculus III', allowed: ['fall-2027', 'summer-2027', 'summer-2028', 'summer-2029', 'fall-2029', 'summer-2030'], isCore: true },
+            { code: 'MATH 2321', name: 'Calculus III', allowed: ['fall-2027', 'summer-2027', 'summer-2028', 'summer-2029', 'fall-2029', 'summer-2030'], isCore: true, prereqs: '2414' },
             { code: 'MATH 3305', name: 'Linear Algebra', allowed: ['spring-2027', 'spring-2028'], isCore: true },
             { code: 'MATH 3310', name: 'Differential Equations', allowed: ['fall-2026', 'fall-2028'], isCore: true },
             { code: 'MATH 3311', name: 'Inquiry & Proof', allowed: ['fall-2027', 'fall-2028', 'fall-2029', 'fall-2030'], isCore: true },
@@ -674,8 +674,11 @@
 
             // Sort courses by the numeric part of the code
             const sortedCourses = [...COURSES].sort((a, b) => {
-                const numA = a.code.replace(/[^0-9]/g, '');
-                const numB = b.code.replace(/[^0-9]/g, '');
+                let numA = a.code.replace(/[^0-9]/g, '');
+                let numB = b.code.replace(/[^0-9]/g, '');
+                // Hack: make Cal III (2321) sort after Cal II (2414)
+                if (numA === '2321') numA = '2414.5';
+                if (numB === '2321') numB = '2414.5';
                 return numA.localeCompare(numB, undefined, { numeric: true });
             });
 
