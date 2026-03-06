@@ -918,7 +918,7 @@
             const researchPlaced = researchCourses.filter(c => placedCourses.has(c.code)).length;
             const researchCheckbox = document.getElementById('req-41XX');
             if (researchCheckbox) {
-                researchCheckbox.checked = researchPlaced >= 4;
+                researchCheckbox.checked = researchPlaced >= 3;
                 if (researchCheckbox.checked) coreComplete++;
             }
 
